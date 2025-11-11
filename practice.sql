@@ -2,7 +2,7 @@
 --  SQL PRACTICE SCRIPT (Annotated)
 --  Author: Madhu
 --  Description: Contains database setup, sample data, and
---  30–35 beginner-level SQL questions with solutions.
+--  30 beginner-level SQL questions with solutions.
 -- ========================================================
 
 
@@ -55,61 +55,60 @@ VALUES
 (25, 'Tanya Kapoor', 'Finance', 70000, 'Bangalore', '2020-02-29');
 
 
-
+--RETRIEVE ALL RECORDS FROM THE EMP TABLE.
 SELECT * FROM emp;
     
-
+--SHOW NAMES AND DEPARTMENTS OF ALL EMPLOYEES.
 SELECT name, dept FROM emp;
     
-
+--FIND EMPLOYEES WHO WORK IN THE IT DEPARTMENT.
 SELECT * FROM emp
 WHERE dept = 'IT';
     
-
+--GET EMPLOYEES WITH SALARY GREATER THAN 50,000.
 SELECT * FROM emp
 WHERE salary > 50000;
 
-
+--LIST EMPLOYEES WHO JOINED AFTER 1ST JANUARY 2021.
 SELECT * FROM emp 
 WHERE join_date > '2021-01-01';
     
-
-SELECT city FROM emp
-GROUP BY city;
+--SHOW DISTINCT CITIES WHERE EMPLOYEES WORK.
+SELECT DISTINCT dept FROM emp;
     
-
+--COUNT TOTAL NUMBER OF EMPLOYEES.
 SELECT COUNT(name) 
 FROM emp;
     
-
+--FIND THE AVERAGE SALARY OF ALL EMPLOYEES.
 SELECT AVG(salary) FROM emp;
     
-
+--GET THE NUMBER OF EMPLOYEES IN EACH DEPARTMENT.
 SELECT COUNT(name) AS 'no of emp', dept FROM emp
 GROUP BY dept;
     
-
+--FIND EMPLOYEES WHOSE NAME STARTS WITH ‘S’.
 SELECT * FROM emp 
 WHERE name LIKE 'S%';
 	
-
+--FIND THE HIGHEST SALARY FROM THE EMPLOYEE TABLE.
 SELECT MAX(salary) FROM emp;
     
-
+--LIST EMPLOYEES WHO EARN MORE THAN THE AVERAGE SALARY.
 SELECT * FROM emp
 WHERE salary > (SELECT AVG(salary) FROM emp);
     
-
+--FIND HOW MANY EMPLOYEES ARE FROM EACH CITY, BUT ONLY SHOW CITIES WITH MORE THAN 1 EMPLOYEE.
 SELECT COUNT(name), city FROM emp
 GROUP BY city
-HAVING COUNT(name) < 1;
+HAVING COUNT(name) > 1;
     
-
+--SHOW DEPARTMENTS WHERE THE TOTAL SALARY IS MORE THAN 1,00,000.
 SELECT dept, SUM(salary) FROM emp
 GROUP BY dept
 HAVING SUM(salary) > 100000;
     
-
+--DISPLAY THE EMPLOYEE(S) WHO JOINED EARLIEST IN EACH DEPARTMENT.
 SELECT name, dept, join_date 
 FROM emp
 WHERE join_date IN (
@@ -117,26 +116,27 @@ WHERE join_date IN (
 	GROUP BY dept
 );
              
-
+--FIND EMPLOYEES WHOSE NAMES CONTAIN BOTH LETTERS ‘A’ AND ‘N’.
+SELECT * FROM emp
 WHERE name LIKE '%a%' 
 AND name LIKE '%n%';
           
-
+--LIST EMPLOYEES WHO DO NOT WORK IN IT OR HR.
 SELECT * FROM emp
 WHERE dept NOT IN ('IT', 'HR');
 
-
+--FIND THE EMPLOYEE(S) WITH THE HIGHEST SALARY IN EACH DEPARTMENT.
 SELECT name, dept, salary FROM emp
 WHERE (dept, salary) IN (
 	SELECT dept, MAX(salary) FROM emp
 	GROUP BY dept
 );
                 
-
+--SHOW EMPLOYEES WHO JOINED BETWEEN 2020 AND 2022 (INCLUSIVE).
 SELECT * FROM emp 
 WHERE YEAR(join_date) BETWEEN 2020 AND 2022;
     
-
+--GET THE DEPARTMENT WITH THE LOWEST AVERAGE SALARY.
 SELECT salary, dept FROM emp
 WHERE (dept, salary) IN (
 	SELECT dept, MIN(salary) FROM emp
@@ -144,39 +144,29 @@ WHERE (dept, salary) IN (
 )
 ORDER BY salary;
     
-
+--FIND ALL EMPLOYEES WHOSE SALARY IS BETWEEN 40,000 AND 60,000.
 SELECT * FROM emp
 WHERE salary BETWEEN 40000 AND 60000;
     
-
+--LIST NAMES AND DEPARTMENTS OF EMPLOYEES WHO WORK IN DELHI OR MUMBAI.
 SELECT name, dept, city FROM emp
 WHERE city IN ('Delhi','Mumbai')
 ORDER BY city ASC;
     
-
+--COUNT EMPLOYEES WHO JOINED AFTER 2020.
 SELECT COUNT(name) FROM emp
 WHERE YEAR(join_date) > 2020;
     
-
-SELECT dept, salary FROM emp
-WHERE salary IN (
-	SELECT AVG(salary), dept FROM emp
-	GROUP BY dept
-);
-    
-
+--GET DEPARTMENT-WISE AVERAGE SALARY ROUNDED TO 2 DECIMALS.
 SELECT dept, ROUND(AVG(salary), 2) AS avg_salary
 FROM emp
 GROUP BY dept;
 
-
+--LIST EMPLOYEES WHOSE NAME ENDS WITH ‘A’.
 SELECT * FROM emp
 WHERE name LIKE '%a';
-    
 
-SELECT DISTINCT dept FROM emp;
-    
-
+--FIND THE HIGHEST SALARY AND THE EMPLOYEE(S) EARNING IT.
 SELECT name, dept, salary
 FROM emp e
 WHERE salary = (
@@ -185,17 +175,27 @@ WHERE salary = (
 	WHERE dept = e.dept
 );
     
-
+--COUNT HOW MANY EMPLOYEES EACH DEPARTMENT HAS, AND SHOW ONLY DEPARTMENTS WITH MORE THAN 2 EMPLOYEES.
 SELECT COUNT(name), dept FROM emp
 GROUP BY dept
 HAVING COUNT(name) > 2;
     
-    
+--LIST EMPLOYEES WHO JOINED IN THE SAME YEAR (SHOW NAME, DEPT, YEAR).
 SELECT name, dept, YEAR(join_date) AS join_year FROM emp
 ORDER BY YEAR(join_date);
     
-
+--SHOW EMPLOYEES WHO ARE NOT FROM MUMBAI OR DELHI.
 SELECT * FROM emp
 WHERE city NOT IN ('Mumbai','Delhi');
+
+--FIND EMPLOYEES WHO HAVE A SALARY GREATER THAN THE AVERAGE SALARY OF THEIR CITY.
+SELECT e.name, e.city, e.salary
+FROM emp e
+WHERE e.salary > (
+    SELECT AVG(salary)
+    FROM emp
+    WHERE city = e.city
+)
+ORDER BY CITY;
 
 -- END OF SCRIPT
